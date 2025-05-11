@@ -1,0 +1,564 @@
+app:
+  description: ''
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  mode: workflow
+  name: 全书概括
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/siliconflow:0.0.12@2ab1fcd77138b7ecdd707790aa1936d5c187fca547ebd165728237b0630c3a44
+kind: app
+version: 0.2.0
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        image_file_size_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: false
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInIteration: false
+        sourceType: start
+        targetType: code
+      id: 1711067409646-source-1717916867969-target
+      source: '1711067409646'
+      sourceHandle: source
+      target: '1717916867969'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: true
+        loop_id: '1746893087580'
+        sourceType: loop-start
+        targetType: llm
+      id: 1746893087580start-source-1746893143474-target
+      source: 1746893087580start
+      sourceHandle: source
+      target: '1746893143474'
+      targetHandle: target
+      type: custom
+      zIndex: 1002
+    - data:
+        isInLoop: false
+        sourceType: code
+        targetType: loop
+      id: 1717916867969-source-1746893087580-target
+      source: '1717916867969'
+      sourceHandle: source
+      target: '1746893087580'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: true
+        loop_id: '1746893087580'
+        sourceType: llm
+        targetType: code
+      id: 1746893143474-source-1746939294492-target
+      source: '1746893143474'
+      sourceHandle: source
+      target: '1746939294492'
+      targetHandle: target
+      type: custom
+      zIndex: 1002
+    - data:
+        isInIteration: false
+        isInLoop: true
+        loop_id: '1746893087580'
+        sourceType: code
+        targetType: assigner
+      id: 1746939294492-source-1746936743231-target
+      source: '1746939294492'
+      sourceHandle: source
+      target: '1746936743231'
+      targetHandle: target
+      type: custom
+      zIndex: 1002
+    - data:
+        isInLoop: false
+        sourceType: loop
+        targetType: llm
+      id: 1746893087580-source-1746939597053-target
+      source: '1746893087580'
+      sourceHandle: source
+      target: '1746939597053'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: llm
+        targetType: end
+      id: 1746939597053-source-1711068257370-target
+      source: '1746939597053'
+      sourceHandle: source
+      target: '1711068257370'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        desc: ''
+        selected: false
+        title: 开始
+        type: start
+        variables:
+        - label: 输入文本
+          max_length: null
+          options: []
+          required: true
+          type: paragraph
+          variable: input_text
+      dragging: false
+      height: 90
+      id: '1711067409646'
+      position:
+        x: 30
+        y: 301.5
+      positionAbsolute:
+        x: 30
+        y: 301.5
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        desc: ''
+        outputs:
+        - value_selector:
+          - '1746939597053'
+          - text
+          variable: final
+        selected: false
+        title: 结束
+        type: end
+      height: 90
+      id: '1711068257370'
+      position:
+        x: 1142.3016450029672
+        y: -133.85667654387538
+      positionAbsolute:
+        x: 1142.3016450029672
+        y: -133.85667654387538
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        code: "import re\ndef main(input_text: str):\n    chapters = re.split(r'(Chapter\
+          \ \\d+\\n.*?\\n)', input_text)[1:]\n\n    # 将奇数索引作为章节标题，偶数索引作为章节内容\n   \
+          \ chapter_pairs = [(chapters[i], chapters[i+1]) for i in range(0, len(chapters)-1,\
+          \ 2)]\n    chunks = [i[0] + '\\n' + i[1] for i in chapter_pairs]\n    return\
+          \ {\n        \"chunks\": chunks, \"chunks_size\": len(chunks)\n    }\n"
+        code_language: python3
+        dependencies: []
+        desc: split by chapter keyword
+        outputs:
+          chunks:
+            children: null
+            type: array[string]
+          chunks_size:
+            children: null
+            type: number
+        selected: false
+        title: 代码执行
+        type: code
+        variables:
+        - value_selector:
+          - '1711067409646'
+          - input_text
+          variable: input_text
+      height: 82
+      id: '1717916867969'
+      position:
+        x: -481.64348908688794
+        y: -205.0759745536914
+      positionAbsolute:
+        x: -481.64348908688794
+        y: -205.0759745536914
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        author: Dify
+        desc: ''
+        height: 150
+        selected: false
+        showAuthor: true
+        text: '{"root":{"children":[{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"代码节点将
+          input_text 分成长度为 token_limit 的块。每个块相互重叠，以确保文本的一致性。","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":0},{"children":[],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":0},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"代码节点输出一个由
+          input_texts 分段文本组成的数组 chunks。","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":0}],"direction":"ltr","format":"","indent":0,"type":"root","version":1}}'
+        theme: blue
+        title: ''
+        type: ''
+        width: 371
+      height: 150
+      id: '1718990593686'
+      position:
+        x: 259.3026056936437
+        y: 451.6924912936374
+      positionAbsolute:
+        x: 259.3026056936437
+        y: 451.6924912936374
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom-note
+      width: 371
+    - data:
+        author: Dify
+        desc: ''
+        height: 107
+        selected: false
+        showAuthor: true
+        text: '{"root":{"children":[{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"遍历代码节点输出的所有元素，并使用三步翻译工作流程翻译每个块。","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":0}],"direction":"ltr","format":"","indent":0,"type":"root","version":1}}'
+        theme: blue
+        title: ''
+        type: ''
+        width: 310
+      height: 107
+      id: '1718991836605'
+      position:
+        x: 762.0918010335982
+        y: 527.4456856855423
+      positionAbsolute:
+        x: 762.0918010335982
+        y: 527.4456856855423
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom-note
+      width: 310
+    - data:
+        author: Dify
+        desc: ''
+        height: 134
+        selected: false
+        showAuthor: true
+        text: '{"root":{"children":[{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"避免把
+          token_limit 设的过高，GPT-4o的性能在上下文长度较长时会下降。","type":"text","version":1}],"direction":"ltr","format":"start","indent":0,"type":"paragraph","version":1,"textFormat":0},{"children":[],"direction":"ltr","format":"start","indent":0,"type":"paragraph","version":1,"textFormat":0},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"建议使用不超过1000个token。","type":"text","version":1}],"direction":"ltr","format":"start","indent":0,"type":"paragraph","version":1,"textFormat":0}],"direction":"ltr","format":"","indent":0,"type":"root","version":1}}'
+        theme: yellow
+        title: ''
+        type: ''
+        width: 355
+      height: 134
+      id: '1718991882984'
+      position:
+        x: 304.49115824454367
+        y: 148.4042994607805
+      positionAbsolute:
+        x: 304.49115824454367
+        y: 148.4042994607805
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom-note
+      width: 355
+    - data:
+        break_conditions:
+        - comparison_operator: '='
+          id: 602154b1-9616-43ed-8bf9-a26668dc4053
+          numberVarType: variable
+          value: '{{#1717916867969.chunks_size#}}'
+          varType: number
+          variable_selector:
+          - '1746893087580'
+          - i
+        desc: ''
+        error_handle_mode: terminated
+        height: 250
+        logical_operator: and
+        loop_count: 29
+        loop_variables:
+        - id: ff6e2b8d-ced6-41cc-b22f-37f275e219b0
+          label: previous_sum
+          value: None
+          value_type: constant
+          var_type: string
+        - id: 6b383aef-511d-45c5-9392-bd36249bbf57
+          label: i
+          value: '0'
+          value_type: constant
+          var_type: number
+        selected: false
+        start_node_id: 1746893087580start
+        title: Loop
+        type: loop
+        width: 1126.9516124696615
+      height: 250
+      id: '1746893087580'
+      position:
+        x: -104.94679415349617
+        y: -332.38072780324626
+      positionAbsolute:
+        x: -104.94679415349617
+        y: -332.38072780324626
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 1127
+      zIndex: 1
+    - data:
+        desc: ''
+        isInLoop: true
+        selected: false
+        title: ''
+        type: loop-start
+      draggable: false
+      height: 48
+      id: 1746893087580start
+      parentId: '1746893087580'
+      position:
+        x: 24
+        y: 68
+      positionAbsolute:
+        x: -80.94679415349617
+        y: -264.38072780324626
+      selectable: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom-loop-start
+      width: 44
+      zIndex: 1002
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        isInIteration: false
+        isInLoop: true
+        loop_id: '1746893087580'
+        model:
+          completion_params: {}
+          mode: chat
+          name: Qwen/Qwen2.5-72B-Instruct
+          provider: langgenius/siliconflow/siliconflow
+        prompt_config:
+          jinja2_variables:
+          - value_selector:
+            - '1717916867969'
+            - chunks
+            variable: chunks
+          - value_selector:
+            - '1746893087580'
+            - previous_sum
+            variable: previous_sum
+          - value_selector:
+            - '1746893087580'
+            - i
+            variable: i
+        prompt_template:
+        - edition_type: jinja2
+          id: beb5bde2-1b14-4bab-a168-844c5866671e
+          jinja2_text: 你是一位小说内容概括专家
+          role: system
+          text: "<任务> 将用户输入的文本用不超过100字的中文进行概括。\n\n<输入文本> \n{{#1717916867969.chunks#}}\n\
+            <之前概括的文本>\n{{#1746893087580.previous_sum#}}"
+        - edition_type: jinja2
+          id: 28a6dfb2-a5bd-4f8f-903c-93d564a6fa3b
+          jinja2_text: "1. **基础信息输入**\n- 小说标题：\"The Red Mansion\"\n- 当前章节：第{{i + 1}}章:\n\
+            {{ chunks[i] }} \n- 前情提要：从第1章一直到第{{i}}章：\n{{ previous_sum }}\n\n\n\n2.\
+            \ **概括要求**\n- 总字数不超过 300 字;\n- 根据当前章节和前情提要概括第{{i + 1}}章（当前章节）的内容;\n- 所概括的内容不要出现文中没有的信息。\n\
+            \n\n3. **输出格式**\n【章节概括】\n第{{i + 1}}章：[内容]"
+          role: user
+          text: ''
+        selected: false
+        title: LLM 2
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: '1746893143474'
+      parentId: '1746893087580'
+      position:
+        x: 126.85130164500288
+        y: 69.148698354997
+      positionAbsolute:
+        x: 21.904507491506706
+        y: -263.23202944824925
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+      zIndex: 1002
+    - data:
+        code: "\ndef main(arg1: str, arg2: str) -> dict:\n    tmp = arg2 + '\\n' +\
+          \ arg1\n    tmp = tmp.replace(\"【章节概括】\", \"\").replace(\"None\",\"\")\n\
+          \    return {\n        \"result\": tmp,\n    }\n"
+        code_language: python3
+        desc: ''
+        isInIteration: false
+        isInLoop: true
+        loop_id: '1746893087580'
+        outputs:
+          result:
+            children: null
+            type: string
+        selected: false
+        title: Code 2
+        type: code
+        variables:
+        - value_selector:
+          - '1746893143474'
+          - text
+          variable: arg1
+        - value_selector:
+          - '1746893087580'
+          - previous_sum
+          variable: arg2
+      height: 54
+      id: '1746939294492'
+      parentId: '1746893087580'
+      position:
+        x: 525.7882010355429
+        y: 79.93307861496143
+      positionAbsolute:
+        x: 420.8414068820467
+        y: -252.44764918828483
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+      zIndex: 1002
+    - data:
+        desc: ''
+        isInIteration: false
+        isInLoop: true
+        items:
+        - input_type: constant
+          operation: +=
+          value: 1
+          variable_selector:
+          - '1746893087580'
+          - i
+          write_mode: over-write
+        - input_type: variable
+          operation: over-write
+          value:
+          - '1746939294492'
+          - result
+          variable_selector:
+          - '1746893087580'
+          - previous_sum
+          write_mode: over-write
+        loop_id: '1746893087580'
+        selected: false
+        title: Variable Assigner
+        type: assigner
+        version: '2'
+      height: 116
+      id: '1746936743231'
+      parentId: '1746893087580'
+      position:
+        x: 829.7882010355429
+        y: 79.93307861496143
+      positionAbsolute:
+        x: 724.8414068820467
+        y: -252.44764918828483
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+      zIndex: 1002
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params: {}
+          mode: chat
+          name: Qwen/Qwen2.5-72B-Instruct
+          provider: langgenius/siliconflow/siliconflow
+        prompt_template:
+        - id: cf660bc0-0147-4458-a804-4842481fe4fe
+          role: system
+          text: 请扮演资深文案编辑，对以下文本进行专业润色。
+        - id: 493c79af-e7ca-4eb2-8037-c4224b4c0687
+          role: user
+          text: '- 保持原意的同时提升语言表现力
+
+            - 替换陈词滥调为新颖表达（如将"非常努力"具体化为行为描述）
+
+            - 输出要求：保留原文信息和结构。
+
+            待润色文本：{{#1746893087580.previous_sum#}}'
+        selected: false
+        title: LLM 2
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: '1746939597053'
+      position:
+        x: 1118.9913030958423
+        y: -316.29895083328785
+      positionAbsolute:
+        x: 1118.9913030958423
+        y: -316.29895083328785
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    viewport:
+      x: 244.36149076644836
+      y: 376.85422981789236
+      zoom: 0.8705505632961259
